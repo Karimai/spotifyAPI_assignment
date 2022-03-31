@@ -14,8 +14,9 @@ def usage():
 
 
 if __name__ == "__main__":
+    output_file = "result.html"
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hi:s:", ["help", "client_id", "client_secret"])
+        opts, args = getopt.getopt(sys.argv[1:], "hi:s:o:", ["help", "client_id", "client_secret"])
     except getopt.GetoptError as err:
         print(err)
         usage()
@@ -28,6 +29,9 @@ if __name__ == "__main__":
             client_id = a
         elif o in ("-s", "--client_secret"):
             client_secret = a
+        elif o in ("-o",):
+            if a != "":
+                output_file = a
         else:
             assert False, "unhandled option"
     body_params = {'grant_type': 'client_credentials'}
@@ -64,8 +68,7 @@ if __name__ == "__main__":
         out_file += "    </tr>\n"
 
     out_file += "</table>\n</tbody>\n"
-    # print(out_file)
-    with open("result.html", "w") as res_fd:
+    with open(output_file, "w") as res_fd:
         res_fd.write(out_file)
 
-    webbrowser.open('file://' + os.path.realpath("result.html"))
+    webbrowser.open('file://' + os.path.realpath(output_file))
