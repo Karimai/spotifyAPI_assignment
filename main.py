@@ -9,9 +9,6 @@ import requests
 def usage():
     print("main.py -i client_id -s client_secret")
 
-# client_id = "732347158c784230bc0b0dadabd43daf"
-# client_secret = "16d9218fc9bd479992f51ff89fbc2b4b"
-
 
 if __name__ == "__main__":
     output_file = "result.html"
@@ -54,17 +51,18 @@ if __name__ == "__main__":
     tracks = ""
     with open("./tracks.json") as fd:
         tracks = json.load(fd)
+    results = []
     for track in tracks:
         res = requests.get(f'https://api.spotify.com/v1/tracks/{track}', headers=headers)
         jres = res.json()
-
-        print(jres["album"]["name"])
-        print(jres["album"]["artists"][0]["name"])
-        print(jres["album"]["release_date"])
+        results.append([jres["album"]["name"],
+                        jres["album"]["artists"][0]["name"],
+                        jres["album"]["release_date"]])
+    sorted_results = sorted(results, key=lambda x: x[2])
+    for items in sorted_results:
         out_file += "    <tr>\n"
-        out_file += f"    <td>{jres['album']['name']}</td>\n"
-        out_file += f"    <td>{jres['album']['artists'][0]['name']}</td>\n"
-        out_file += f"    <td>{jres['album']['release_date']}</td>\n"
+        for item in items:
+            out_file += f"    <td>{item}</td>\n"
         out_file += "    </tr>\n"
 
     out_file += "</table>\n</tbody>\n"
